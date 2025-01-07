@@ -41,7 +41,7 @@ func main() {
 			}
 
 			if !found {
-				fmt.Println("invalid_command: not found")
+				fmt.Printf("%s: not found", args[0])
 			}
 		} else {
 			fmt.Println(command + ": command not found")
