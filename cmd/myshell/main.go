@@ -31,14 +31,18 @@ func main() {
 		} else if command == "echo" {
 			fmt.Println(strings.Join(args, " "))
 		} else if command == "type" {
+			found := false
 			for i := 0; i < len(builtins); i++ {
 				if builtins[i] == args[0] {
 					fmt.Println(args[0], "is a shell builtin")
+					found = true
 					break
 				}
 			}
 
-			fmt.Println("invalid_command: not found")
+			if !found {
+				fmt.Println("invalid_command: not found")
+			}
 		} else {
 			fmt.Println(command + ": command not found")
 		}
