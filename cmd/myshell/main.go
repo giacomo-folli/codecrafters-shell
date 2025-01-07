@@ -18,12 +18,17 @@ func main() {
 			os.Exit(1)
 		}
 
-		command := strings.TrimRight(userInput, "\r\n")
+		input_string := strings.TrimRight(userInput, "\r\n")
+		parsed_string := strings.Split(input_string, " ")
 
-		if command == "exit 0" {
+		command := parsed_string[0]
+		args := parsed_string[1:]
+
+		if command == "exit" {
 			os.Exit(0)
+		} else if command == "echo" {
+			fmt.Println(strings.Join(args, " "))
 		} else {
-			// Print the command not found message
 			fmt.Println(command + ": command not found")
 		}
 	}
