@@ -9,6 +9,8 @@ import (
 
 func main() {
 	for {
+		builtins := []string{"echo", "exit", "type"}
+
 		fmt.Fprint(os.Stdout, "$ ")
 
 		// Wait for user input
@@ -28,6 +30,15 @@ func main() {
 			os.Exit(0)
 		} else if command == "echo" {
 			fmt.Println(strings.Join(args, " "))
+		} else if command == "type" {
+			for i := 0; i < len(builtins); i++ {
+				if builtins[i] == args[0] {
+					fmt.Println(args[0], "is a shell builtin")
+					break
+				}
+			}
+
+			fmt.Println("invalid_command: not found")
 		} else {
 			fmt.Println(command + ": command not found")
 		}
