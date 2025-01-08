@@ -14,6 +14,7 @@ var builtins = []string{"echo", "exit", "type", "pwd"}
 
 func main() {
 	os.Setenv("PWD", initPwdVar())
+	os.Setenv("HOME", initHomeVar())
 
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
@@ -40,8 +41,14 @@ func main() {
 
 		case "cd":
 			targetPath := args[0]
-			isAbsolute := targetPath[0] == '/'
 
+			isHome := targetPath[0] == '~'
+			if isHome {
+				os.Setenv("PWD", os.Getenv("HOME"))
+				break
+			}
+
+			isAbsolute := targetPath[0] == '/'
 			if !isAbsolute {
 				targetPath = filepath.Join(os.Getenv("PWD"), targetPath)
 			}
@@ -115,6 +122,15 @@ func getUserIput() string {
 
 func initPwdVar() string {
 	dir, err := os.Getwd()
+	if err == nil {
+		return dir
+	}
+
+	return ""
+}
+
+func initHomeVar() string {
+	dir, err := os.UserHomeDir()
 	if err == nil {
 		return dir
 	}
