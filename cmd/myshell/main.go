@@ -8,7 +8,47 @@ import (
 	"strings"
 )
 
-func searchCommandInDir(command string) (string, bool) {
+func main() {
+	for {
+		fmt.Fprint(os.Stdout, "$ ")
+
+		userInput := getUserIput()
+		input_string := strings.TrimRight(userInput, "\r\n")
+		parsed_string := strings.Split(input_string, " ")
+
+		command := parsed_string[0]
+		args := parsed_string[1:]
+
+		switch command {
+		case "exit":
+			// terminate session
+			os.Exit(0)
+		case "echo":
+			// echo command (buildin)
+			fmt.Println(strings.Join(args, " "))
+		case "type":
+			// search command in buildin or path nev
+			isBuildIn := searchBuildin(args[0])
+			if isBuildIn {
+				fmt.Println(command, "is a shell builtin")
+				continue
+			}
+
+			path, found := searchCommandInPath(args[0])
+			if found {
+				fmt.Println(args[0], "is", path)
+			} else {
+				fmt.Printf("%s: not found\n", args[0])
+			}
+
+		default:
+			// error log
+			fmt.Println(command + ": command not found")
+		}
+	}
+}
+
+func searchCommandInPath(command string) (string, bool) {
 	path, err := exec.LookPath(command)
 	if err == nil {
 		return path, true
@@ -17,51 +57,26 @@ func searchCommandInDir(command string) (string, bool) {
 	return "", false
 }
 
-func main() {
-	for {
-		builtins := []string{"echo", "exit", "type"}
+func searchBuildin(command string) bool {
+	builtins := []string{"echo", "exit", "type"}
+	found := false
 
-		fmt.Fprint(os.Stdout, "$ ")
-
-		userInput, err := bufio.NewReader(os.Stdin).ReadString('\n')
-		if err != nil {
-			fmt.Fprintf(os.Stdout, "Error in reading string\n")
-			os.Exit(1)
-		}
-
-		input_string := strings.TrimRight(userInput, "\r\n")
-		parsed_string := strings.Split(input_string, " ")
-
-		command := parsed_string[0]
-		args := parsed_string[1:]
-
-		if command == "exit" {
-			os.Exit(0)
-		} else if command == "echo" {
-			fmt.Println(strings.Join(args, " "))
-		} else if command == "type" {
-			isBuildIn := false
-			for i := 0; i < len(builtins); i++ {
-				if builtins[i] == args[0] {
-					fmt.Println(args[0], "is a shell builtin")
-					isBuildIn = true
-					break
-				}
-			}
-
-			if isBuildIn {
-				continue
-			}
-
-			path, found := searchCommandInDir(args[0])
-			if found {
-				fmt.Println(args[0], "is", path)
-			} else {
-				fmt.Printf("%s: not found\n", args[0])
-			}
-
-		} else {
-			fmt.Println(command + ": command not found")
+	for i := 0; i < len(builtins); i++ {
+		if builtins[i] == command {
+			found = true
+			break
 		}
 	}
+
+	return found
+}
+
+func getUserIput() string {
+	input, err := bufio.NewReader(os.Stdin).ReadString('\n')
+	if err != nil {
+		fmt.Fprintf(os.Stdout, "Error in reading string\n")
+		os.Exit(1)
+	}
+
+	return input
 }
