@@ -33,7 +33,7 @@ func main() {
 		case "pwd":
 			// print working directory command (buildin)
 			dir, err := os.Getwd()
-			if err == nil {
+			if err != nil {
 				fmt.Println("Error while executing command: pwd")
 			} else {
 				fmt.Println(dir)
