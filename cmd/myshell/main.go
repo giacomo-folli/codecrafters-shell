@@ -50,7 +50,7 @@ func main() {
 				cmd := exec.Command(command, args...)
 				stdout, _ := cmd.Output()
 
-				fmt.Println(string(stdout))
+				fmt.Print(string(stdout), "\n")
 			}
 		}
 	}
