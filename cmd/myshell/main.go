@@ -33,7 +33,8 @@ func main() {
 
 		case "echo":
 			// echo command (buildin)
-			fmt.Println(strings.Join(args, " "))
+			message := strings.Join(args, " ")
+			fmt.Println(strings.Replace(message, "'", "", 2))
 
 		case "pwd":
 			// print PWD env variable
