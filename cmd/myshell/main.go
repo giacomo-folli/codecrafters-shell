@@ -49,7 +49,7 @@ func main() {
 				fmt.Println(command + ": command not found")
 			}
 
-			cmd := exec.Command(path, args...)
+			cmd := exec.Command(path, strings.Split(input_string, " ")...)
 			stdout, _ := cmd.Output()
 
 			// if err != nil {
