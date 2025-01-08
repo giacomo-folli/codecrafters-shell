@@ -44,12 +44,13 @@ func main() {
 			}
 
 		default:
-			path, found := searchCommandInPath(command)
+			_, found := searchCommandInPath(command)
 			if !found {
 				fmt.Println(command + ": command not found")
 			}
 
-			cmd := exec.Command(path, strings.Split(input_string, " ")...)
+			// cmd := exec.Command(path, strings.Split(input_string, " ")...)
+			cmd := exec.Command(command, args...)
 			stdout, _ := cmd.Output()
 
 			// if err != nil {
