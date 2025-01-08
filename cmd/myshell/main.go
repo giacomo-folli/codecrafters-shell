@@ -43,7 +43,7 @@ func main() {
 			// print working directory command (buildin)
 			err := os.Chdir(args[0])
 			if err != nil {
-				fmt.Println("Error while executing command: cd")
+				fmt.Printf("cd: %s: No such file or directory\n", args[0])
 			}
 
 		case "type":
