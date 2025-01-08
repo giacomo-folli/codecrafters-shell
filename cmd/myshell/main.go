@@ -23,9 +23,11 @@ func main() {
 		case "exit":
 			// terminate session
 			os.Exit(0)
+
 		case "echo":
 			// echo command (buildin)
 			fmt.Println(strings.Join(args, " "))
+
 		case "type":
 			// search command in buildin or path nev
 			isBuildIn := searchBuildin(args[0])
@@ -42,8 +44,21 @@ func main() {
 			}
 
 		default:
-			// error log
-			fmt.Println(command + ": command not found")
+			path, found := searchCommandInPath(command)
+			if !found {
+				fmt.Println(command + ": command not found")
+			}
+
+			cmd := exec.Command(path, args...)
+			stdout, _ := cmd.Output()
+
+			// if err != nil {
+			// 	fmt.Println("-----------------------------------")
+			// 	fmt.Println("Error in executing command", command)
+			// 	fmt.Println("-----------------------------------")
+			// }
+
+			fmt.Println(string(stdout))
 		}
 	}
 }
