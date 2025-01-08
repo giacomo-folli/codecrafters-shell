@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+var builtins = []string{"echo", "exit", "type", "pwd"}
+
 func main() {
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
@@ -27,6 +29,13 @@ func main() {
 		case "echo":
 			// echo command (buildin)
 			fmt.Println(strings.Join(args, " "))
+
+		case "pwd":
+			// print working directory command (buildin)
+			dir, err := os.Getwd()
+			if err == nil {
+				fmt.Println(dir)
+			}
 
 		case "type":
 			// search command in buildin or path nev
@@ -66,7 +75,6 @@ func searchCommandInPath(command string) (string, bool) {
 }
 
 func searchBuildin(command string) bool {
-	builtins := []string{"echo", "exit", "type"}
 	found := false
 
 	for i := 0; i < len(builtins); i++ {
