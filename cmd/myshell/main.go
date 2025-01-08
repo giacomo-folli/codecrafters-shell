@@ -4,16 +4,25 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
+func searchCommandInDir(command string) (string, bool) {
+	path, err := exec.LookPath(command)
+	if err == nil {
+		return path, true
+	}
+
+	return "", false
+}
+
 func main() {
 	for {
-		builtins := []string{"echo", "exit", "type"}
+		// builtins := []string{"echo", "exit", "type"}
 
 		fmt.Fprint(os.Stdout, "$ ")
 
-		// Wait for user input
 		userInput, err := bufio.NewReader(os.Stdin).ReadString('\n')
 		if err != nil {
 			fmt.Fprintf(os.Stdout, "Error in reading string\n")
@@ -31,18 +40,21 @@ func main() {
 		} else if command == "echo" {
 			fmt.Println(strings.Join(args, " "))
 		} else if command == "type" {
-			found := false
-			for i := 0; i < len(builtins); i++ {
-				if builtins[i] == args[0] {
-					fmt.Println(args[0], "is a shell builtin")
-					found = true
-					break
-				}
-			}
+			path, found := searchCommandInDir(args[0])
+			// for i := 0; i < len(builtins); i++ {
+			// 	if builtins[i] == args[0] {
+			// 		fmt.Println(args[0], "is a shell builtin")
+			// 		found = true
+			// 		break
+			// 	}
+			// }
 
-			if !found {
+			if found {
+				fmt.Println(args[0], "is", path)
+			} else {
 				fmt.Printf("%s: not found\n", args[0])
 			}
+
 		} else {
 			fmt.Println(command + ": command not found")
 		}
