@@ -34,7 +34,16 @@ func main() {
 			// print working directory command (buildin)
 			dir, err := os.Getwd()
 			if err == nil {
+				fmt.Println("Error while executing command: pwd")
+			} else {
 				fmt.Println(dir)
+			}
+
+		case "cd":
+			// print working directory command (buildin)
+			err := os.Chdir(args[0])
+			if err != nil {
+				fmt.Println("Error while executing command: cd")
 			}
 
 		case "type":
