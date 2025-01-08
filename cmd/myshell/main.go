@@ -30,7 +30,7 @@ func main() {
 			// search command in buildin or path nev
 			isBuildIn := searchBuildin(args[0])
 			if isBuildIn {
-				fmt.Println(command, "is a shell builtin")
+				fmt.Println(args[0], "is a shell builtin")
 				continue
 			}
 
