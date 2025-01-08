@@ -19,7 +19,7 @@ func searchCommandInDir(command string) (string, bool) {
 
 func main() {
 	for {
-		// builtins := []string{"echo", "exit", "type"}
+		builtins := []string{"echo", "exit", "type"}
 
 		fmt.Fprint(os.Stdout, "$ ")
 
@@ -40,15 +40,20 @@ func main() {
 		} else if command == "echo" {
 			fmt.Println(strings.Join(args, " "))
 		} else if command == "type" {
-			path, found := searchCommandInDir(args[0])
-			// for i := 0; i < len(builtins); i++ {
-			// 	if builtins[i] == args[0] {
-			// 		fmt.Println(args[0], "is a shell builtin")
-			// 		found = true
-			// 		break
-			// 	}
-			// }
+			isBuildIn := false
+			for i := 0; i < len(builtins); i++ {
+				if builtins[i] == args[0] {
+					fmt.Println(args[0], "is a shell builtin")
+					isBuildIn = true
+					break
+				}
+			}
 
+			if isBuildIn {
+				continue
+			}
+
+			path, found := searchCommandInDir(args[0])
 			if found {
 				fmt.Println(args[0], "is", path)
 			} else {
