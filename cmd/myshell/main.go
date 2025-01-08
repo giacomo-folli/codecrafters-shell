@@ -48,7 +48,7 @@ func main() {
 
 			if _, err := os.Stat(targetPath); errors.Is(err, os.ErrNotExist) {
 				fmt.Printf("%s: No such file or directory\n", targetPath)
-				continue
+				break
 			}
 
 			os.Setenv("PWD", targetPath)
