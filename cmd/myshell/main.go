@@ -47,17 +47,11 @@ func main() {
 			_, found := searchCommandInPath(command)
 			if !found {
 				fmt.Println(command + ": command not found")
+				continue
 			}
 
-			// cmd := exec.Command(path, strings.Split(input_string, " ")...)
 			cmd := exec.Command(command, args...)
 			stdout, _ := cmd.Output()
-
-			// if err != nil {
-			// 	fmt.Println("-----------------------------------")
-			// 	fmt.Println("Error in executing command", command)
-			// 	fmt.Println("-----------------------------------")
-			// }
 
 			fmt.Println(string(stdout))
 		}
