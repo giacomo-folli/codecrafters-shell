@@ -33,27 +33,25 @@ func main() {
 			isBuildIn := searchBuildin(args[0])
 			if isBuildIn {
 				fmt.Println(args[0], "is a shell builtin")
-				continue
-			}
-
-			path, found := searchCommandInPath(args[0])
-			if found {
-				fmt.Println(args[0], "is", path)
 			} else {
-				fmt.Printf("%s: not found\n", args[0])
+				path, found := searchCommandInPath(args[0])
+				if found {
+					fmt.Println(args[0], "is", path)
+				} else {
+					fmt.Printf("%s: not found\n", args[0])
+				}
 			}
 
 		default:
 			_, found := searchCommandInPath(command)
 			if !found {
 				fmt.Println(command + ": command not found")
-				continue
+			} else {
+				cmd := exec.Command(command, args...)
+				stdout, _ := cmd.Output()
+
+				fmt.Println(string(stdout))
 			}
-
-			cmd := exec.Command(command, args...)
-			stdout, _ := cmd.Output()
-
-			fmt.Println(string(stdout))
 		}
 	}
 }
