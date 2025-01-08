@@ -2,15 +2,19 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
 var builtins = []string{"echo", "exit", "type", "pwd"}
 
 func main() {
+	os.Setenv("PWD", initPwdVar())
+
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 
@@ -31,20 +35,23 @@ func main() {
 			fmt.Println(strings.Join(args, " "))
 
 		case "pwd":
-			// print working directory command (buildin)
-			dir, err := os.Getwd()
-			if err != nil {
-				fmt.Println("Error while executing command: pwd")
-			} else {
-				fmt.Println(dir)
-			}
+			// print PWD env variable
+			fmt.Println(os.Getenv("PWD"))
 
 		case "cd":
-			// print working directory command (buildin)
-			err := os.Chdir(args[0])
-			if err != nil {
-				fmt.Printf("cd: %s: No such file or directory\n", args[0])
+			targetPath := args[0]
+			isAbsolute := targetPath[0] == '/'
+
+			if !isAbsolute {
+				targetPath = filepath.Join(os.Getenv("PWD"), targetPath)
 			}
+
+			if _, err := os.Stat(targetPath); errors.Is(err, os.ErrNotExist) {
+				fmt.Printf("%s: No such file or directory\n", targetPath)
+				return
+			}
+
+			os.Setenv("PWD", targetPath)
 
 		case "type":
 			// search command in buildin or path nev
@@ -104,4 +111,13 @@ func getUserIput() string {
 	}
 
 	return input
+}
+
+func initPwdVar() string {
+	dir, err := os.Getwd()
+	if err == nil {
+		return dir
+	}
+
+	return ""
 }
