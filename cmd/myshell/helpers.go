@@ -68,22 +68,28 @@ func _generateTokens(s string) []string {
 		}
 
 		bb := []byte("'")
-		if temp[i] == bb[0] && temp[i+1] == bb[0] {
+		cc := []byte("\"")
+
+		bb_check := temp[i] == bb[0] && temp[i+1] == bb[0]
+		cc_check := temp[i] == cc[0] && temp[i+1] == cc[0]
+
+		if bb_check || cc_check {
 			temp = temp[:i] + temp[i+2:]
 		}
 	}
 
 	s = temp
 	for {
-		start := strings.Index(s, "'")
+		start := strings.IndexAny(s, "'\"")
 		if start == -1 {
 			tokens = append(tokens, strings.Fields(s)...)
 			break
 		}
 
+		ch := s[start]
 		tokens = append(tokens, strings.Fields(s[:start])...)
 		s = s[start+1:]
-		end := strings.Index(s, "'")
+		end := strings.IndexByte(s, ch)
 		token := s[:end]
 		tokens = append(tokens, token)
 		s = s[end+1:]
