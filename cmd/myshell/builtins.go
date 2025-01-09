@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"slices"
 	"strings"
 )
 
@@ -27,22 +26,47 @@ func _adv_echo(args []string) {
 	fmt.Print(strings.Join(args, " "), "\n")
 }
 
-func echo(args string) {
-	args_slice := strings.Split(args, " ")
+func _generateTokens(s string) []string {
+	var tokens []string
 
-	start := strings.HasPrefix(args_slice[0], "'")
-	end := strings.HasSuffix(args_slice[len(args_slice)-1], "'")
+	for {
+		start := strings.Index(s, "'")
+		if start == -1 {
+			tokens = append(tokens, strings.Fields(s)...)
+			break
+		}
 
-	if start && end {
-		_base_echo(args_slice)
-		return
+		tokens = append(tokens, strings.Fields(s[:start])...)
+		s = s[start+1:]
+		end := strings.Index(s, "'")
+		token := s[:end]
+		tokens = append(tokens, token)
+		s = s[end+1:]
 	}
 
-	formatted_Args := slices.DeleteFunc(args_slice, func(s string) bool {
-		return s == ""
-	})
+	return tokens
+}
 
-	_adv_echo(formatted_Args)
+func echo(args string) {
+	s := args
+	tokens := _generateTokens(s)
+
+	fmt.Println(strings.Join(tokens, " "))
+	// args_slice := strings.Split(args, " ")
+
+	// start := strings.HasPrefix(args_slice[0], "'")
+	// end := strings.HasSuffix(args_slice[len(args_slice)-1], "'")
+
+	// if start && end {
+	// 	_base_echo(args_slice)
+	// 	return
+	// }
+
+	// formatted_Args := slices.DeleteFunc(args_slice, func(s string) bool {
+	// 	return s == ""
+	// })
+
+	// _adv_echo(formatted_Args)
 }
 
 // search command in buildin or path nev
