@@ -87,9 +87,12 @@ func _generateTokens(s string) []string {
 		}
 
 		ch := s[start]
-		tokens = append(tokens, strings.Fields(s[:start])...)
+		fields := strings.Fields(s[:start])
+
+		tokens = append(tokens, fields...)
 		s = s[start+1:]
 		end := strings.IndexByte(s, ch)
+
 		token := s[:end]
 		tokens = append(tokens, token)
 		s = s[end+1:]
@@ -99,6 +102,4 @@ func _generateTokens(s string) []string {
 }
 
 // A non-quoted backslash ‘\’ is the Bash escape character. It preserves the literal value of
-// the next character that follows, with the exception of newline. If a \newline pair appears,
-// and the backslash itself is not quoted, the \newline is treated as a line continuation (that
-// is, it is removed from the input stream and effectively ignored).
+// the next character that follows, with the exception of newline.
