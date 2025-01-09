@@ -17,18 +17,22 @@ func pwd(args string) {
 	fmt.Println(os.Getenv("PWD"))
 }
 
-func _base_echo(args []string) {
-	stringg := strings.Join(args, " ")
-	fmt.Print(stringg[1:len(stringg)-1], "\n")
-}
-
-func _adv_echo(args []string) {
-	fmt.Print(strings.Join(args, " "), "\n")
-}
-
 func _generateTokens(s string) []string {
 	var tokens []string
 
+	temp := s
+	for i := range len(temp) - 1 {
+		if i == len(temp)-2 {
+			break
+		}
+
+		bb := []byte("'")
+		if temp[i] == bb[0] && temp[i+1] == bb[0] {
+			temp = temp[:i] + temp[i+2:]
+		}
+	}
+
+	s = temp
 	for {
 		start := strings.Index(s, "'")
 		if start == -1 {
