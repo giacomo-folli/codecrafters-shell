@@ -56,21 +56,6 @@ func echo(args string) {
 	tokens := _generateTokens(s)
 
 	fmt.Println(strings.Join(tokens, " "))
-	// args_slice := strings.Split(args, " ")
-
-	// start := strings.HasPrefix(args_slice[0], "'")
-	// end := strings.HasSuffix(args_slice[len(args_slice)-1], "'")
-
-	// if start && end {
-	// 	_base_echo(args_slice)
-	// 	return
-	// }
-
-	// formatted_Args := slices.DeleteFunc(args_slice, func(s string) bool {
-	// 	return s == ""
-	// })
-
-	// _adv_echo(formatted_Args)
 }
 
 // search command in buildin or path nev
@@ -114,14 +99,17 @@ func cd(args string) {
 
 // Run a general command provided by the user
 func run(command string, args string) {
-	args_slice := strings.Split(args, " ")
+	args_slice := _generateTokens(args)
 
 	_, found := searchCommandInPath(command)
 	if !found {
 		fmt.Println(command + ": command not found")
 	} else {
 		cmd := exec.Command(command, args_slice...)
-		stdout, _ := cmd.Output()
+		stdout, err := cmd.Output()
+		if err != nil {
+			fmt.Println("Error in execution of", command, "command")
+		}
 
 		fmt.Print(string(stdout))
 	}
