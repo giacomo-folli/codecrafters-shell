@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+type MyFunc func(args string)
+
 var builtins = []string{"echo", "exit", "type", "pwd"}
 var commands = map[string]MyFunc{
 	"echo": echo,
@@ -27,19 +29,13 @@ func main() {
 		parsed_string := strings.Split(input_string, " ")
 
 		command := parsed_string[0]
-		args := parsed_string[1:]
+		args := strings.Join(parsed_string[1:], " ")
 
 		task(command, args)
 	}
 }
 
-// ---------------------------------------------------------
-// TODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOT
-// ---------------------------------------------------------
-
-type MyFunc func(args []string)
-
-func task(command string, args []string) (ok bool) {
+func task(command string, args string) (ok bool) {
 	handler, ok := commands[command]
 	if ok {
 		handler(args)

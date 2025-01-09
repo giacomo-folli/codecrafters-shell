@@ -10,54 +10,44 @@ import (
 	"strings"
 )
 
-func exit(args []string) {
+func exit(args string) {
 	os.Exit(0)
 }
 
-func pwd(args []string) {
+func pwd(args string) {
 	fmt.Println(os.Getenv("PWD"))
 }
 
-func base_echo(args []string) {
+func _base_echo(args []string) {
 	stringg := strings.Join(args, " ")
 	fmt.Print(stringg[1:len(stringg)-1], "\n")
 }
 
-func adv_echo(args []string) {
+func _adv_echo(args []string) {
 	fmt.Print(strings.Join(args, " "), "\n")
 }
 
-func echo(args []string) {
-	start := strings.HasPrefix(args[0], "'")
-	end := strings.HasSuffix(args[len(args)-1], "'")
+func echo(args string) {
+	args_slice := strings.Split(args, " ")
+
+	start := strings.HasPrefix(args_slice[0], "'")
+	end := strings.HasSuffix(args_slice[len(args_slice)-1], "'")
 
 	if start && end {
-		base_echo(args)
+		_base_echo(args_slice)
 		return
 	}
 
-	formatted_Args := slices.DeleteFunc(args, func(s string) bool {
+	formatted_Args := slices.DeleteFunc(args_slice, func(s string) bool {
 		return s == ""
 	})
 
-	adv_echo(formatted_Args)
+	_adv_echo(formatted_Args)
 }
 
-func run(command string, args []string) {
-	_, found := searchCommandInPath(command)
-	if !found {
-		fmt.Println(command + ": command not found")
-	} else {
-		cmd := exec.Command(command, args...)
-		stdout, _ := cmd.Output()
-
-		fmt.Print(string(stdout))
-	}
-}
-
-func ttype(args []string) {
-	// search command in buildin or path nev
-	command := args[0]
+// search command in buildin or path nev
+func ttype(args string) {
+	command := strings.Split(args, " ")[0]
 
 	isBuildIn := searchBuildin(command)
 	if isBuildIn {
@@ -72,8 +62,8 @@ func ttype(args []string) {
 	}
 }
 
-func cd(args []string) {
-	tempPath := args[0]
+func cd(args string) {
+	tempPath := strings.Split(args, " ")[0]
 
 	isHome := tempPath[0] == '~'
 	if isHome {
@@ -92,4 +82,19 @@ func cd(args []string) {
 	}
 
 	os.Setenv("PWD", tempPath)
+}
+
+// Run a general command provided by the user
+func run(command string, args string) {
+	args_slice := strings.Split(args, " ")
+
+	_, found := searchCommandInPath(command)
+	if !found {
+		fmt.Println(command + ": command not found")
+	} else {
+		cmd := exec.Command(command, args_slice...)
+		stdout, _ := cmd.Output()
+
+		fmt.Print(string(stdout))
+	}
 }
