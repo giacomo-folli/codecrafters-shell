@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func initPwdVar() string {
@@ -55,4 +56,38 @@ func getUserIput() string {
 	}
 
 	return input
+}
+
+func _generateTokens(s string) []string {
+	var tokens []string
+
+	temp := s
+	for i := range len(temp) - 1 {
+		if i == len(temp)-2 {
+			break
+		}
+
+		bb := []byte("'")
+		if temp[i] == bb[0] && temp[i+1] == bb[0] {
+			temp = temp[:i] + temp[i+2:]
+		}
+	}
+
+	s = temp
+	for {
+		start := strings.Index(s, "'")
+		if start == -1 {
+			tokens = append(tokens, strings.Fields(s)...)
+			break
+		}
+
+		tokens = append(tokens, strings.Fields(s[:start])...)
+		s = s[start+1:]
+		end := strings.Index(s, "'")
+		token := s[:end]
+		tokens = append(tokens, token)
+		s = s[end+1:]
+	}
+
+	return tokens
 }
