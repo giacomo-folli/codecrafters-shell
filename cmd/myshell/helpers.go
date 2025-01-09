@@ -80,7 +80,7 @@ func _generateTokens(s string) []string {
 
 	s = temp
 	for {
-		start := strings.IndexAny(s, "'\"")
+		start := strings.IndexAny(s, "'\"\\")
 		if start == -1 {
 			tokens = append(tokens, strings.Fields(s)...)
 			break
@@ -97,3 +97,8 @@ func _generateTokens(s string) []string {
 
 	return tokens
 }
+
+// A non-quoted backslash ‘\’ is the Bash escape character. It preserves the literal value of
+// the next character that follows, with the exception of newline. If a \newline pair appears,
+// and the backslash itself is not quoted, the \newline is treated as a line continuation (that
+// is, it is removed from the input stream and effectively ignored).
