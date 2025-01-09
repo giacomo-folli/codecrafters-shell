@@ -1,16 +1,19 @@
 package main
 
 import (
-	"bufio"
-	"errors"
 	"fmt"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"strings"
 )
 
 var builtins = []string{"echo", "exit", "type", "pwd"}
+var commands = map[string]MyFunc{
+	"echo": echo,
+	"exit": exit,
+	"type": ttype,
+	"pwd":  pwd,
+	"cd":   cd,
+}
 
 func main() {
 	os.Setenv("PWD", initPwdVar())
@@ -26,115 +29,24 @@ func main() {
 		command := parsed_string[0]
 		args := parsed_string[1:]
 
-		switch command {
-		case "exit":
-			// terminate session
-			os.Exit(0)
-
-		case "echo":
-			// echo command (buildin)
-			message := strings.Join(args, " ")
-			fmt.Println(strings.Replace(message, "'", "", 2))
-
-		case "pwd":
-			// print PWD env variable
-			fmt.Println(os.Getenv("PWD"))
-
-		case "cd":
-			targetPath := args[0]
-
-			isHome := targetPath[0] == '~'
-			if isHome {
-				os.Setenv("PWD", os.Getenv("HOME"))
-				break
-			}
-
-			isAbsolute := targetPath[0] == '/'
-			if !isAbsolute {
-				targetPath = filepath.Join(os.Getenv("PWD"), targetPath)
-			}
-
-			if _, err := os.Stat(targetPath); errors.Is(err, os.ErrNotExist) {
-				fmt.Printf("%s: No such file or directory\n", targetPath)
-				break
-			}
-
-			os.Setenv("PWD", targetPath)
-
-		case "type":
-			// search command in buildin or path nev
-			isBuildIn := searchBuildin(args[0])
-			if isBuildIn {
-				fmt.Println(args[0], "is a shell builtin")
-			} else {
-				path, found := searchCommandInPath(args[0])
-				if found {
-					fmt.Println(args[0], "is", path)
-				} else {
-					fmt.Printf("%s: not found\n", args[0])
-				}
-			}
-
-		default:
-			_, found := searchCommandInPath(command)
-			if !found {
-				fmt.Println(command + ": command not found")
-			} else {
-				cmd := exec.Command(command, args...)
-				stdout, _ := cmd.Output()
-
-				fmt.Print(string(stdout))
-			}
-		}
+		task(command, args)
 	}
 }
 
-func searchCommandInPath(command string) (string, bool) {
-	path, err := exec.LookPath(command)
-	if err == nil {
-		return path, true
+// ---------------------------------------------------------
+// TODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOT
+// ---------------------------------------------------------
+
+type MyFunc func(args []string)
+
+func task(command string, args []string) (ok bool) {
+	handler, ok := commands[command]
+	if ok {
+		handler(args)
+	} else {
+		run(command, args)
 	}
 
-	return "", false
-}
+	return
 
-func searchBuildin(command string) bool {
-	found := false
-
-	for i := 0; i < len(builtins); i++ {
-		if builtins[i] == command {
-			found = true
-			break
-		}
-	}
-
-	return found
-}
-
-func getUserIput() string {
-	input, err := bufio.NewReader(os.Stdin).ReadString('\n')
-	if err != nil {
-		fmt.Fprintf(os.Stdout, "Error in reading string\n")
-		os.Exit(1)
-	}
-
-	return input
-}
-
-func initPwdVar() string {
-	dir, err := os.Getwd()
-	if err == nil {
-		return dir
-	}
-
-	return ""
-}
-
-func initHomeVar() string {
-	dir, err := os.UserHomeDir()
-	if err == nil {
-		return dir
-	}
-
-	return ""
 }
