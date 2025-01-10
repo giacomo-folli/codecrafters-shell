@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 type MyFunc func(args string)
@@ -18,6 +20,12 @@ var commands = map[string]MyFunc{
 }
 
 func main() {
+	err := godotenv.Load()
+	if err == nil {
+		environment := os.Getenv("ENV")
+		fmt.Println("APP RUNNING IN", environment, "MODE")
+	}
+
 	os.Setenv("PWD", initPwdVar())
 	os.Setenv("HOME", initHomeVar())
 

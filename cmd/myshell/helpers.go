@@ -59,52 +59,6 @@ func getUserIput() string {
 	return input
 }
 
-func _generateTokens(s string) []string {
-	var tokens []string
-
-	temp := s
-	for i := range len(temp) - 1 {
-		if i == len(temp)-2 {
-			break
-		}
-
-		bb := []byte("'")
-		cc := []byte("\"")
-
-		bb_check := temp[i] == bb[0] && temp[i+1] == bb[0]
-		cc_check := temp[i] == cc[0] && temp[i+1] == cc[0]
-
-		if bb_check || cc_check {
-			temp = temp[:i] + temp[i+2:]
-		}
-	}
-
-	s = temp
-	for {
-		start := strings.IndexAny(s, "'\"\\")
-		if start == -1 {
-			tokens = append(tokens, strings.Fields(s)...)
-			break
-		}
-
-		ch := s[start]
-		fields := strings.Fields(s[:start])
-
-		tokens = append(tokens, fields...)
-		s = s[start+1:]
-		end := strings.IndexByte(s, ch)
-
-		token := s[:end]
-		tokens = append(tokens, token)
-		s = s[end+1:]
-	}
-
-	return tokens
-}
-
-// A non-quoted backslash ‘\’ is the Bash escape character. It preserves the literal value of
-// the next character that follows, with the exception of newline.
-
 func _parseArgs(s string) []string {
 	var result []string
 
@@ -113,9 +67,11 @@ func _parseArgs(s string) []string {
 	re := regexp.MustCompile(`'[^']*'|"[^"]*"|\S+`)
 	matches := re.FindAllString(temp, -1)
 
-	// for i, match := range matches {
-	// 	fmt.Println("DEBUG: match", i, " ->", match)
-	// }
+	if env := os.Getenv("ENV"); env == "LOCAL" {
+		for i, match := range matches {
+			fmt.Println("DEBUG: match", i, " ->", match)
+		}
+	}
 
 	for _, match := range matches {
 		match_single_quotes := match[0] == '\'' && match[len(match)-1] == '\''
@@ -130,9 +86,15 @@ func _parseArgs(s string) []string {
 		}
 	}
 
-	// for i, res := range result {
-	// 	fmt.Println("DEBUG: result", i, " ->", res)
-	// }
+	if env := os.Getenv("ENV"); env == "LOCAL" {
+		fmt.Println("------------------------------")
+
+		for i, res := range result {
+			fmt.Println("DEBUG: result", i, " ->", res)
+		}
+
+		fmt.Println("------------------------------")
+	}
 
 	return result
 }
