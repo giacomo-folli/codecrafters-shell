@@ -106,12 +106,29 @@ func _generateTokens(s string) []string {
 // the next character that follows, with the exception of newline.
 
 func parseArgs(s string) []string {
-	re := regexp.MustCompile(`'[^']*'|"[^"]*"|\S+`)
-	matches := re.FindAllString(s, -1)
-
 	// for i, match := range matches {
 	// 	fmt.Println("DEBUG: match", i, " ->", match)
 	// }
+
+	temp := s
+	for i := range len(temp) - 1 {
+		if i == len(temp)-2 {
+			break
+		}
+
+		bb := []byte("'")
+		cc := []byte("\"")
+
+		bb_check := temp[i] == bb[0] && temp[i+1] == bb[0]
+		cc_check := temp[i] == cc[0] && temp[i+1] == cc[0]
+
+		if bb_check || cc_check {
+			temp = temp[:i] + temp[i+2:]
+		}
+	}
+
+	re := regexp.MustCompile(`'[^']*'|"[^"]*"|\S+`)
+	matches := re.FindAllString(temp, -1)
 
 	var result []string
 
