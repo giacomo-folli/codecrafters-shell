@@ -19,7 +19,7 @@ func pwd(args string) {
 
 func echo(args string) {
 	//  tokens := _generateTokens(s)
-	tokens := parseArgs(args)
+	tokens := _parseArgs(args)
 	output := strings.Join(tokens, " ")
 	fmt.Println(output)
 }
@@ -65,7 +65,7 @@ func cd(args string) {
 
 // Run a general command provided by the user
 func run(command string, args string) {
-	args_slice := _generateTokens(args)
+	args_slice := _parseArgs(args)
 
 	_, found := searchCommandInPath(command)
 	if !found {

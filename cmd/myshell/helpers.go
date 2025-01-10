@@ -105,32 +105,17 @@ func _generateTokens(s string) []string {
 // A non-quoted backslash ‘\’ is the Bash escape character. It preserves the literal value of
 // the next character that follows, with the exception of newline.
 
-func parseArgs(s string) []string {
-	// for i, match := range matches {
-	// 	fmt.Println("DEBUG: match", i, " ->", match)
-	// }
+func _parseArgs(s string) []string {
+	var result []string
 
-	temp := s
-	for i := range len(temp) - 1 {
-		if i == len(temp)-2 {
-			break
-		}
-
-		bb := []byte("'")
-		cc := []byte("\"")
-
-		bb_check := temp[i] == bb[0] && temp[i+1] == bb[0]
-		cc_check := temp[i] == cc[0] && temp[i+1] == cc[0]
-
-		if bb_check || cc_check {
-			temp = temp[:i] + temp[i+2:]
-		}
-	}
+	temp := _removeInvalidQuotes(s)
 
 	re := regexp.MustCompile(`'[^']*'|"[^"]*"|\S+`)
 	matches := re.FindAllString(temp, -1)
 
-	var result []string
+	// for i, match := range matches {
+	// 	fmt.Println("DEBUG: match", i, " ->", match)
+	// }
 
 	for _, match := range matches {
 		match_single_quotes := match[0] == '\'' && match[len(match)-1] == '\''
@@ -150,4 +135,24 @@ func parseArgs(s string) []string {
 	// }
 
 	return result
+}
+
+func _removeInvalidQuotes(s string) string {
+	for i := range len(s) - 1 {
+		if i == len(s)-2 {
+			break
+		}
+
+		bb := []byte("'")
+		cc := []byte("\"")
+
+		bb_check := s[i] == bb[0] && s[i+1] == bb[0]
+		cc_check := s[i] == cc[0] && s[i+1] == cc[0]
+
+		if bb_check || cc_check {
+			s = s[:i] + s[i+2:]
+		}
+	}
+
+	return s
 }
