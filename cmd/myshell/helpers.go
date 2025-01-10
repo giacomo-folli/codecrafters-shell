@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -103,3 +104,25 @@ func _generateTokens(s string) []string {
 
 // A non-quoted backslash ‘\’ is the Bash escape character. It preserves the literal value of
 // the next character that follows, with the exception of newline.
+
+func parseArgs(s string) []string {
+	re := regexp.MustCompile(`'[^']*'|"[^"]*"|\S+`)
+	matches := re.FindAllString(s, -1)
+
+	var result []string
+
+	for _, match := range matches {
+		match_single_quotes := match[0] == '\'' && match[len(match)-1] == '\''
+		match_double_quotes := match[0] == '"' && match[len(match)-1] == '"'
+
+		if match_single_quotes || match_double_quotes {
+			result = append(result, match[1:len(match)-1])
+		} else if match[0] == '\\' {
+			result = append(result, "")
+		} else {
+			result = append(result, strings.ReplaceAll(match, "\\", ""))
+		}
+	}
+
+	return result
+}

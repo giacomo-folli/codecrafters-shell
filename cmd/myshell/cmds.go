@@ -18,9 +18,8 @@ func pwd(args string) {
 }
 
 func echo(args string) {
-	s := args
-	tokens := _generateTokens(s)
-
+	//  tokens := _generateTokens(s)
+	tokens := parseArgs(args)
 	fmt.Println(strings.Join(tokens, " "))
 }
 
