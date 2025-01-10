@@ -109,6 +109,10 @@ func parseArgs(s string) []string {
 	re := regexp.MustCompile(`'[^']*'|"[^"]*"|\S+`)
 	matches := re.FindAllString(s, -1)
 
+	// for i, match := range matches {
+	// 	fmt.Println("DEBUG: match", i, " ->", match)
+	// }
+
 	var result []string
 
 	for _, match := range matches {
@@ -117,12 +121,16 @@ func parseArgs(s string) []string {
 
 		if match_single_quotes || match_double_quotes {
 			result = append(result, match[1:len(match)-1])
-		} else if match[0] == '\\' {
-			result = append(result, "")
+			// } else if match[0] == '\\' {
+			// 	result = append(result, "")
 		} else {
 			result = append(result, strings.ReplaceAll(match, "\\", ""))
 		}
 	}
+
+	// for i, res := range result {
+	// 	fmt.Println("DEBUG: result", i, " ->", res)
+	// }
 
 	return result
 }
