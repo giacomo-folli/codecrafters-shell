@@ -1,4 +1,4 @@
 *.exe
 a
 .env
-*_test.*
+*test.*
