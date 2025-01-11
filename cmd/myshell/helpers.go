@@ -244,14 +244,14 @@ func parseDoubleQuoted(s string, start int) (string, int) {
 
 		if s[i] == '\\' && i+1 < len(s) {
 			switch s[i+1] {
-			case '\\':
-				content = append(content, '\\')
 			case 'n':
 				content = append(content, '\\', 'n')
 			case '"':
 				content = append(content, '"')
 			case '\'':
 				content = append(content, '\'')
+			case '\\':
+				content = append(content, '\\')
 			default:
 				content = append(content, '\\', rune(s[i+1]))
 			}
