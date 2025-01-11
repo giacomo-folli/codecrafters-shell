@@ -27,7 +27,8 @@ var cases = []struct {
 
 func TestCommandParsing(t *testing.T) {
 	for i, ccase := range cases {
-		tokenized := _parseArgs(ccase.in)
+		// tokenized := _parseArgs(ccase.in)
+		tokenized := ParseArgs(ccase.in)
 
 		got := strings.Join(tokenized, " ")
 		want := ccase.out
@@ -39,5 +40,23 @@ func TestCommandParsing(t *testing.T) {
 			fmt.Println("--------------------------------------------------")
 			t.Errorf("\ngot  %q \nwant %q", got, want)
 		}
+	}
+}
+
+func TestSingleQuoteParsing(t *testing.T) {
+	ccase := []struct {
+		in  string
+		out string
+	}{
+		{in: `"hello\"insidequotes"script\"`, out: `hello"insidequotesscript"`},
+	}[0]
+
+	parsed, _ := parseDoubleQuoted(ccase.in, 1)
+
+	got := parsed
+	want := ccase.out
+
+	if got != want {
+		t.Errorf("\ngot  %q \nwant %q", got, want)
 	}
 }
