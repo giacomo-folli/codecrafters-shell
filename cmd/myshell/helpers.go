@@ -67,34 +67,42 @@ func _parseArgs(s string) []string {
 	re := regexp.MustCompile(`'[^']*'|"[^"]*"|\S+`)
 	matches := re.FindAllString(temp, -1)
 
-	if env := os.Getenv("ENV"); env == "LOCAL" {
-		for i, match := range matches {
-			fmt.Println("DEBUG: match", i, " ->", match)
-		}
-	}
+	// if env := os.Getenv("ENV"); env == "LOCAL" {
+	// 	for i, match := range matches {
+	// 		fmt.Println("DEBUG: match", i, " ->", match)
+	// 	}
+	// }
 
 	for _, match := range matches {
 		match_single_quotes := match[0] == '\'' && match[len(match)-1] == '\''
 		match_double_quotes := match[0] == '"' && match[len(match)-1] == '"'
 
-		if match_single_quotes || match_double_quotes {
+		if match_single_quotes {
 			result = append(result, match[1:len(match)-1])
-			// } else if match[0] == '\\' {
-			// 	result = append(result, "")
+		} else if match_double_quotes {
+			sliced := match[1 : len(match)-1]
+			// \, $, "
+
+			sliced = strings.ReplaceAll(sliced, `\\`, `\`)
+			sliced = strings.ReplaceAll(sliced, `\$`, `$`)
+			sliced = strings.ReplaceAll(sliced, `\"`, `"`)
+			// temp = strings.ReplaceAll(temp, `\n`, `n`)
+
+			result = append(result, sliced)
 		} else {
-			result = append(result, strings.ReplaceAll(match, "\\", ""))
+			result = append(result, strings.ReplaceAll(match, `\`, ""))
 		}
 	}
 
-	if env := os.Getenv("ENV"); env == "LOCAL" {
-		fmt.Println("------------------------------")
+	// if env := os.Getenv("ENV"); env == "LOCAL" {
+	// 	fmt.Println("------------------------------")
 
-		for i, res := range result {
-			fmt.Println("DEBUG: result", i, " ->", res)
-		}
+	// 	for i, res := range result {
+	// 		fmt.Println("DEBUG: result", i, " ->", res)
+	// 	}
 
-		fmt.Println("------------------------------")
-	}
+	// 	fmt.Println("------------------------------")
+	// }
 
 	return result
 }
