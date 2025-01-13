@@ -262,5 +262,9 @@ func parseDoubleQuoted(s string, start int) (string, int) {
 		content = append(content, rune(s[i]))
 	}
 
-	return string(content), len(s)
+	final := string(content)
+
+	// fmt.Println(len(final))
+
+	return final, len(final)
 }
