@@ -65,7 +65,7 @@ func cd(args string) {
 
 // Run a general command provided by the user
 func run(command string, args string) {
-	args_slice := _parseArgs(args)
+	args_slice := ParseArgs(args)
 
 	_, found := searchCommandInPath(command)
 	if !found {
