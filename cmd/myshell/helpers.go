@@ -165,9 +165,18 @@ func ParseArgs(s string) []string {
 
 		case '"':
 			// Handle double quoted string
+			// if i+1 < len(s) {
+			// 	if s[i+1] == ' ' {
 			content, newPos := parseDoubleQuoted(s, i+1)
 			current = append(current, []rune(content)...)
 			i = newPos
+			// 	} else {
+			// 		i++
+			// 	}
+			// } else {
+			// 	current = append(current, '"')
+			// 	i++
+			// }
 
 		case '\\':
 			// Handle escaped character
@@ -226,8 +235,6 @@ func parseSingleQuoted(s string, start int) (string, int) {
 // Returns the parsed content and the position after the closing quote
 func parseDoubleQuoted(s string, start int) (string, int) {
 	var content []rune
-
-	// "world\"insidequotes"test\"
 
 	for i := start; i < len(s); i++ {
 		if s[i] == '"' {
