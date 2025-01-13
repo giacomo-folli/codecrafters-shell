@@ -86,8 +86,6 @@ func ParseArgs(s string) []string {
 			current = append(current, []rune(content)...)
 			i = newPos
 
-		// 	{in: `\'\"test world\"\'`, out: `'"test world"'`},
-
 		case '\\':
 			// Handle escaped character
 			if i+1 < len(s) {
@@ -99,7 +97,7 @@ func ParseArgs(s string) []string {
 					i += 2
 				}
 			} else {
-				current = append(current, '\\')
+				current = append(current, rune(s[i]))
 				i++
 			}
 
@@ -126,17 +124,21 @@ func parseSingleQuoted(s string, start int) (string, int) {
 		if s[i] == '\'' {
 			return string(content), i + 1
 		}
-		if s[i] == '\\' {
-			content = append(content, '\\')
-			if i+1 < len(s) {
-				content = append(content, rune(s[i+1]))
-				i++
-			}
-			continue
-		}
+
+		// if s[i] == '\\' {
+		// 	content = append(content, '\\')
+		// 	if i+1 < len(s) {
+		// 		content = append(content, rune(s[i+1]))
+		// 		i++
+		// 	}
+		// 	continue
+		// }
+
+		fmt.Printf(" %c", s[i])
 		content = append(content, rune(s[i]))
 	}
 
+	fmt.Printf("\n")
 	// If no closing quote is found, return the content up to the end
 	return string(content), len(s)
 }
@@ -167,13 +169,14 @@ func parseDoubleQuoted(s string, start int) (string, int) {
 				content = append(content, '\\', 'n')
 			case '"':
 				content = append(content, '"')
-			case '\'':
-				content = append(content, '\'')
+			// case '\'':
+			// 	content = append(content, '\'')
 			case '\\':
 				content = append(content, '\\')
 			default:
 				content = append(content, '\\', rune(s[i+1]))
 			}
+
 			i++
 			continue
 		}
