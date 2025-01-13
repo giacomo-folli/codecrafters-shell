@@ -227,6 +227,8 @@ func parseSingleQuoted(s string, start int) (string, int) {
 func parseDoubleQuoted(s string, start int) (string, int) {
 	var content []rune
 
+	// "world\"insidequotes"test\"
+
 	for i := start; i < len(s); i++ {
 		if s[i] == '"' {
 			if i+1 < len(s) {
@@ -259,12 +261,10 @@ func parseDoubleQuoted(s string, start int) (string, int) {
 			continue
 		}
 
-		content = append(content, rune(s[i]))
+		if s[i] != '"' {
+			content = append(content, rune(s[i]))
+		}
 	}
 
-	final := string(content)
-
-	// fmt.Println(len(final))
-
-	return final, len(final)
+	return string(content), len(s)
 }
