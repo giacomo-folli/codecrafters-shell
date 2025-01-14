@@ -53,8 +53,10 @@ func task(command string, args []string) (ok bool) {
 		output = handler(args)
 	} else {
 		output, err = run(command, args)
+
 		if err != nil {
-			fmt.Printf("%s: %s\n", command, err)
+			fmt.Print(output)
+			return
 		}
 	}
 
