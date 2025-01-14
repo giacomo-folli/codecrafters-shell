@@ -62,14 +62,15 @@ func cd(args string) {
 
 // Run a general command provided by the user
 func run(command string, args string) {
-	// args_slice := ParseArgs(args)
-
+	args_slice := ParseArgs(args)
 	_, found := searchCommandInPath(command)
+
 	if !found {
 		fmt.Println(command + ": command not found")
 	} else {
-		cmd := exec.Command(command, args)
+		cmd := exec.Command(command, args_slice...)
 		stdout, err := cmd.Output()
+
 		if err != nil {
 			fmt.Println("Error in execution of", command, "command")
 		}
