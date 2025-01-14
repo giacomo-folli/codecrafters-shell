@@ -53,14 +53,9 @@ func task(command string, args []string) (ok bool) {
 		output = handler(args)
 	} else {
 		output, err = run(command, args)
-
-		if err != nil {
-			fmt.Print(output)
-			return
-		}
 	}
 
-	if found {
+	if found && err != nil {
 		_writeToFile(file[0], output)
 		return
 	}
