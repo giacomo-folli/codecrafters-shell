@@ -18,9 +18,7 @@ func pwd(args string) {
 }
 
 func echo(args string) {
-	tokens := ParseArgs(args)
-	output := strings.Join(tokens, " ")
-	fmt.Println(output)
+	fmt.Println(args)
 }
 
 // search command in buildin or path nev
