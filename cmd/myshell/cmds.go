@@ -73,19 +73,19 @@ func cd(args []string) string {
 }
 
 // Run a general command provided by the user
-func run(command string, args []string) string {
+func run(command string, args []string) (string, error) {
 	_, found := _searchCommandInPath(command)
-
 	if !found {
-		return fmt.Sprintln(command + ": command not found")
-	} else {
-		cmd := exec.Command(command, args...)
-		stdout, err := cmd.Output()
-
-		if err != nil {
-			return fmt.Sprintln("Error in execution of", command, "command")
-		}
-
-		return fmt.Sprint(string(stdout))
+		return fmt.Sprintln(command + ": command not found"), nil
 	}
+
+	cmd := exec.Command(command, args...)
+	stdout, err := cmd.Output()
+
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprint(string(stdout)), nil
+
 }

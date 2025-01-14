@@ -1,5 +1,7 @@
-*.exe
-a
-.env
-*test.*
 build/
+
+*.exe
+*.txt
+*test.*
+.env
+a

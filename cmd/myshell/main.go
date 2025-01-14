@@ -46,12 +46,16 @@ func task(command string, args []string) (ok bool) {
 	handler, ok := commands[command]
 	output := "\n"
 
+	var err error
 	found, args, file := _checkRedirection(args)
 
 	if ok {
 		output = handler(args)
 	} else {
-		output = run(command, args)
+		output, err = run(command, args)
+		if err != nil {
+			fmt.Printf("%s: %s\n", command, err)
+		}
 	}
 
 	if found {
