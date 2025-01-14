@@ -9,42 +9,53 @@ import (
 	"strings"
 )
 
-func exit(args string) {
+func exit(args []string) string {
 	os.Exit(0)
+	return "\n"
 }
 
-func pwd(args string) {
-	fmt.Println(os.Getenv("PWD"))
+func pwd(args []string) string {
+	return fmt.Sprintln(os.Getenv("PWD"))
 }
 
-func echo(args string) {
-	fmt.Println(args)
+func echo(args []string) string {
+	// found, args_string, file := _checkRedirection(args)
+
+	// if found {
+	// 	err := _writeToFile(file[0], strings.Join(args_string, " "))
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// } else {
+	// 	fmt.Println(strings.Join(args, " "))
+	// }
+	return fmt.Sprintln(strings.Join(args, " "))
 }
 
 // search command in buildin or path nev
-func ttype(args string) {
-	command := strings.Split(args, " ")[0]
+func ttype(args []string) string {
+	command := args[0]
 
-	isBuildIn := searchBuildin(command)
+	isBuildIn := _searchBuildin(command)
 	if isBuildIn {
-		fmt.Println(command, "is a shell builtin")
-	} else {
-		path, found := searchCommandInPath(command)
-		if found {
-			fmt.Println(command, "is", path)
-		} else {
-			fmt.Printf("%s: not found\n", command)
-		}
+		return fmt.Sprintln(command, "is a shell builtin")
 	}
+
+	path, found := _searchCommandInPath(command)
+	if found {
+		return fmt.Sprintln(command, "is", path)
+	}
+
+	return fmt.Sprintf("%s: not found\n", command)
 }
 
-func cd(args string) {
-	tempPath := strings.Split(args, " ")[0]
+func cd(args []string) string {
+	tempPath := args[0]
 
 	isHome := tempPath[0] == '~'
 	if isHome {
 		os.Setenv("PWD", os.Getenv("HOME"))
-		return
+		return "\n"
 	}
 
 	isAbsolute := tempPath[0] == '/'
@@ -54,26 +65,27 @@ func cd(args string) {
 
 	if _, err := os.Stat(tempPath); errors.Is(err, os.ErrNotExist) {
 		fmt.Printf("%s: No such file or directory\n", tempPath)
-		return
+		return "\n"
 	}
 
 	os.Setenv("PWD", tempPath)
+	return "\n"
 }
 
 // Run a general command provided by the user
-func run(command string, args []string) {
-	_, found := searchCommandInPath(command)
+func run(command string, args []string) string {
+	_, found := _searchCommandInPath(command)
 
 	if !found {
-		fmt.Println(command + ": command not found")
+		return fmt.Sprintln(command + ": command not found")
 	} else {
 		cmd := exec.Command(command, args...)
 		stdout, err := cmd.Output()
 
 		if err != nil {
-			fmt.Println("Error in execution of", command, "command")
+			return fmt.Sprintln("Error in execution of", command, "command")
 		}
 
-		fmt.Print(string(stdout))
+		return fmt.Sprint(string(stdout))
 	}
 }

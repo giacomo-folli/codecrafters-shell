@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-func initPwdVar() string {
+func _initPwdVar() string {
 	dir, err := os.Getwd()
 	if err == nil {
 		return dir
@@ -16,7 +16,7 @@ func initPwdVar() string {
 	return ""
 }
 
-func initHomeVar() string {
+func _initHomeVar() string {
 	dir, err := os.UserHomeDir()
 	if err == nil {
 		return dir
@@ -25,7 +25,7 @@ func initHomeVar() string {
 	return ""
 }
 
-func searchCommandInPath(command string) (string, bool) {
+func _searchCommandInPath(command string) (string, bool) {
 	path, err := exec.LookPath(command)
 	if err == nil {
 		return path, true
@@ -34,7 +34,7 @@ func searchCommandInPath(command string) (string, bool) {
 	return "", false
 }
 
-func searchBuildin(command string) bool {
+func _searchBuildin(command string) bool {
 	found := false
 
 	for i := 0; i < len(builtins); i++ {
@@ -47,7 +47,7 @@ func searchBuildin(command string) bool {
 	return found
 }
 
-func getUserIput() string {
+func _getUserIput() string {
 	input, err := bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
 		fmt.Fprintf(os.Stdout, "Error in reading string\n")
@@ -57,7 +57,7 @@ func getUserIput() string {
 	return input
 }
 
-func ParseArgs(s string) []string {
+func _parseArgs(s string) []string {
 	var args []string
 	var current []rune
 	var i int
@@ -76,13 +76,13 @@ func ParseArgs(s string) []string {
 
 		case '\'':
 			// Handle single quoted string
-			content, newPos := parseSingleQuoted(s, i+1)
+			content, newPos := _parseSingleQuoted(s, i+1)
 			current = append(current, []rune(content)...)
 			i = newPos
 
 		case '"':
 			// Handle double  quoted string
-			content, newPos := parseDoubleQuoted(s, i+1)
+			content, newPos := _parseDoubleQuoted(s, i+1)
 			current = append(current, []rune(content)...)
 			i = newPos
 
@@ -115,9 +115,9 @@ func ParseArgs(s string) []string {
 	return args
 }
 
-// parseSingleQuoted handles content within single quotes
+// _parseSingleQuoted handles content within single quotes
 // Returns the parsed content and the position after the closing quote
-func parseSingleQuoted(s string, start int) (string, int) {
+func _parseSingleQuoted(s string, start int) (string, int) {
 	var content []rune
 
 	for i := start; i < len(s); i++ {
@@ -141,9 +141,9 @@ func parseSingleQuoted(s string, start int) (string, int) {
 	return string(content), len(s)
 }
 
-// parseDoubleQuoted handles content within double quotes
+// _parseDoubleQuoted handles content within double quotes
 // Returns the parsed content and the position after the closing quote
-func parseDoubleQuoted(s string, start int) (string, int) {
+func _parseDoubleQuoted(s string, start int) (string, int) {
 	var content []rune
 
 	for i := start; i < len(s); i++ {
@@ -186,4 +186,38 @@ func parseDoubleQuoted(s string, start int) (string, int) {
 	}
 
 	return string(content), len(s)
+}
+
+func _checkRedirection(args []string) (bool, []string, []string) {
+	var redirection_string []string
+	args_string := args
+
+	for i := range len(args) {
+		if args[i] == "1>" || args[i] == ">" {
+			args_string = args[:i]
+			redirection_string = args[i+1:]
+
+			return true, args_string, redirection_string
+		}
+	}
+
+	return false, args_string, nil
+}
+
+func _writeToFile(file string, data string) error {
+	f, err := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+
+	if _, err := f.Write([]byte(data)); err != nil {
+		f.Close()
+		return err
+	}
+
+	if err := f.Close(); err != nil {
+		return err
+	}
+
+	return nil
 }
