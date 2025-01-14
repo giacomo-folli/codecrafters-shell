@@ -36,17 +36,17 @@ func main() {
 		parsedInput := ParseArgs(strings.TrimRight(userInput, "\r\n"))
 
 		command := parsedInput[0]
-		args := strings.Join(parsedInput[1:], " ")
+		args := parsedInput[1:]
 
 		task(command, args)
 	}
 }
 
-func task(command string, args string) (ok bool) {
+func task(command string, args []string) (ok bool) {
 	handler, ok := commands[command]
 
 	if ok {
-		handler(args)
+		handler(strings.Join(args, " "))
 	} else {
 		run(command, args)
 	}
