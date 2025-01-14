@@ -46,20 +46,21 @@ func task(command string, args []string) (ok bool) {
 	// override args if found redirection action
 	found, args, file := _checkRedirection(args)
 	output := "\n"
+	var err error
 
 	handler, ok := commands[command]
 	if ok {
 		output = handler(args)
 	} else {
-		output, _ = run(command, args)
+		output, err = run(command, args)
 	}
 
-	if !found {
+	if !found || err != nil {
 		fmt.Print(output)
 		return
 	}
 
-	err := _writeToFile(file[0], output)
+	err = _writeToFile(file[0], output)
 	if err != nil {
 		fmt.Print("could not write in file\n")
 	}
