@@ -20,16 +20,6 @@ func pwd(args []string) string {
 }
 
 func echo(args []string) string {
-	// found, args_string, file := _checkRedirection(args)
-
-	// if found {
-	// 	err := _writeToFile(file[0], strings.Join(args_string, " "))
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// } else {
-	// 	fmt.Println(strings.Join(args, " "))
-	// }
 	return fmt.Sprintln(strings.Join(args, " "))
 }
 
