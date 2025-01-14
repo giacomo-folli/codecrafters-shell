@@ -18,7 +18,6 @@ func pwd(args string) {
 }
 
 func echo(args string) {
-	//  tokens := _generateTokens(s)
 	tokens := ParseArgs(args)
 	output := strings.Join(tokens, " ")
 	fmt.Println(output)
@@ -65,13 +64,13 @@ func cd(args string) {
 
 // Run a general command provided by the user
 func run(command string, args string) {
-	args_slice := ParseArgs(args)
+	// args_slice := ParseArgs(args)
 
 	_, found := searchCommandInPath(command)
 	if !found {
 		fmt.Println(command + ": command not found")
 	} else {
-		cmd := exec.Command(command, args_slice...)
+		cmd := exec.Command(command, args)
 		stdout, err := cmd.Output()
 		if err != nil {
 			fmt.Println("Error in execution of", command, "command")

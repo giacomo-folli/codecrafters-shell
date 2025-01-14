@@ -2,3 +2,4 @@
 a
 .env
 *test.*
+build/
