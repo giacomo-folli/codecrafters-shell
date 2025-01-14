@@ -33,6 +33,10 @@ func main() {
 		fmt.Fprint(os.Stdout, "$ ")
 
 		userInput := _getUserIput()
+		if userInput == "\n" {
+			continue
+		}
+
 		parsedInput := _parseArgs(strings.TrimRight(userInput, "\r\n"))
 
 		command := parsedInput[0]

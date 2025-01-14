@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"os"
@@ -70,19 +69,31 @@ func run(command string, args []string) (string, error) {
 		return fmt.Sprintln(command + ": command not found"), nil
 	}
 
-	var out bytes.Buffer
-	var stderr bytes.Buffer
+	// var out bytes.Buffer
+	// var stderr bytes.Buffer
 
 	cmd := exec.Command(command, args...)
+	// cmd.Stdout = &out
+	// cmd.Stderr = &stderr
 
-	cmd.Stdout = &out
-	cmd.Stderr = &stderr
-
-	err := cmd.Run()
-
+	// err := cmd.Start()
+	stdout, err := cmd.Output()
 	if err != nil {
-		return fmt.Sprint(stderr.String()), err
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			return fmt.Sprint(string(exitErr.Stderr)), err
+		}
+
+		return fmt.Sprint(err), err
 	}
 
-	return fmt.Sprint(out.String()), nil
+	// if err != nil {
+	// 	return fmt.Sprint(stderr.String()), err
+	// }
+
+	// err = cmd.Wait()
+	// if err != nil {
+	// 	return fmt.Sprint(stderr.String()), err
+	// }
+
+	return fmt.Sprint(string(stdout)), nil
 }
