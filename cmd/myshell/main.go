@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/joho/godotenv"
 )
 
 type MyFunc func(args []string) string
@@ -17,33 +15,6 @@ var commands = map[string]MyFunc{
 	"type": ttype,
 	"pwd":  pwd,
 	"cd":   cd,
-}
-
-func main() {
-	err := godotenv.Load()
-	if err == nil {
-		environment := os.Getenv("ENV")
-		fmt.Println("APP RUNNING IN", environment, "MODE")
-	}
-
-	os.Setenv("PWD", _initPwdVar())
-	os.Setenv("HOME", _initHomeVar())
-
-	for {
-		fmt.Fprint(os.Stdout, "$ ")
-
-		userInput := _getUserIput()
-		if userInput == "\n" {
-			continue
-		}
-
-		parsedInput := _parseArgs(strings.TrimRight(userInput, "\r\n"))
-
-		command := parsedInput[0]
-		args := parsedInput[1:]
-
-		task(command, args)
-	}
 }
 
 func task(command string, args []string) (ok bool) {
@@ -68,6 +39,33 @@ func task(command string, args []string) (ok bool) {
 	if err != nil {
 		fmt.Print("could not write in file\n")
 	}
-
 	return
+}
+
+func main() {
+	// err := godotenv.Load()
+	// if err == nil {
+	// 	environment := os.Getenv("ENV")
+	// 	fmt.Println("APP RUNNING IN", environment, "MODE")
+	// }
+
+	os.Setenv("PWD", _initPwdVar())
+	os.Setenv("HOME", _initHomeVar())
+
+	for {
+		fmt.Fprint(os.Stdout, "$ ")
+
+		userInput := _getUserIput()
+		trimmed := strings.TrimRight(userInput, "\r\n")
+		if trimmed == "" {
+			continue
+		}
+
+		parsedInput := _parseArgs(trimmed)
+
+		command := parsedInput[0]
+		args := parsedInput[1:]
+
+		task(command, args)
+	}
 }
