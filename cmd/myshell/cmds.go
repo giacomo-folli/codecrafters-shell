@@ -56,7 +56,7 @@ func cd(args []string) string {
 	}
 
 	if _, err := os.Stat(tempPath); errors.Is(err, os.ErrNotExist) {
-		fmt.Printf("%s: No such file or directory", tempPath)
+		fmt.Printf("%s: No such file or directory\n", tempPath)
 		return ""
 	}
 
