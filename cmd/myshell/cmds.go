@@ -46,7 +46,8 @@ func cd(args []string) string {
 	isHome := tempPath[0] == '~'
 	if isHome {
 		os.Setenv("PWD", os.Getenv("HOME"))
-		return "\n"
+		os.Chdir(os.Getenv("HOME"))
+		return ""
 	}
 
 	isAbsolute := tempPath[0] == '/'
@@ -55,12 +56,13 @@ func cd(args []string) string {
 	}
 
 	if _, err := os.Stat(tempPath); errors.Is(err, os.ErrNotExist) {
-		fmt.Printf("%s: No such file or directory\n", tempPath)
-		return "\n"
+		fmt.Printf("%s: No such file or directory", tempPath)
+		return ""
 	}
 
 	os.Setenv("PWD", tempPath)
-	return "\n"
+	os.Chdir(tempPath)
+	return ""
 }
 
 // Run a general command provided by the user
