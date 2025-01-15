@@ -69,14 +69,7 @@ func run(command string, args []string) (string, error) {
 		return fmt.Sprintln(command + ": command not found"), nil
 	}
 
-	// var out bytes.Buffer
-	// var stderr bytes.Buffer
-
 	cmd := exec.Command(command, args...)
-	// cmd.Stdout = &out
-	// cmd.Stderr = &stderr
-
-	// err := cmd.Start()
 	stdout, err := cmd.Output()
 	if err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
@@ -85,15 +78,6 @@ func run(command string, args []string) (string, error) {
 
 		return fmt.Sprint(err), err
 	}
-
-	// if err != nil {
-	// 	return fmt.Sprint(stderr.String()), err
-	// }
-
-	// err = cmd.Wait()
-	// if err != nil {
-	// 	return fmt.Sprint(stderr.String()), err
-	// }
 
 	return fmt.Sprint(string(stdout)), nil
 }

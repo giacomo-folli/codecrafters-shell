@@ -200,11 +200,11 @@ func _parseDoubleQuoted(s string, start int) (string, int) {
 				content = append(content, '\\', 'n')
 			case '"':
 				content = append(content, '"')
+			case '\\':
+				content = append(content, '\\')
 			case '\'':
 				content = append(content, '\\')
 				content = append(content, '\'')
-			case '\\':
-				content = append(content, '\\')
 			default:
 				content = append(content, '\\', rune(s[i+1]))
 			}
