@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 )
 
 type MyFunc func(args []string) string
@@ -43,29 +42,18 @@ func task(command string, args []string) (ok bool) {
 }
 
 func main() {
-	// err := godotenv.Load()
-	// if err == nil {
-	// 	environment := os.Getenv("ENV")
-	// 	fmt.Println("APP RUNNING IN", environment, "MODE")
-	// }
-
-	os.Setenv("PWD", _initPwdVar())
-	os.Setenv("HOME", _initHomeVar())
+	_initEnv()
 
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 
 		userInput := _getUserIput()
-		trimmed := strings.TrimRight(userInput, "\r\n")
-		if trimmed == "" {
+		if userInput == "" {
 			continue
 		}
 
-		parsedInput := _parseArgs(trimmed)
+		args := _parseArgs(userInput)
 
-		command := parsedInput[0]
-		args := parsedInput[1:]
-
-		task(command, args)
+		task(args[0], args[1:])
 	}
 }

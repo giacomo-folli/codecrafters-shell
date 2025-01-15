@@ -3,26 +3,59 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
-func _initPwdVar() string {
-	dir, err := os.Getwd()
-	if err == nil {
-		return dir
-	}
+var PATH []string = make([]string, 0)
 
-	return ""
+type output struct {
+	stdOut    string
+	stdErr    string
+	appendOut bool
+	appendErr bool
 }
 
-func _initHomeVar() string {
-	dir, err := os.UserHomeDir()
-	if err == nil {
-		return dir
+var BUILTINS = map[string]struct{}{
+	"exit": {},
+	"echo": {},
+	"type": {},
+	"pwd":  {},
+	"cd":   {},
+}
+
+var DOUBLE_SPECIAL_CHARS = map[rune]struct{}{
+	'$':  {},
+	'\\': {},
+	'"':  {},
+}
+
+var REDIRECTS = map[string]struct{}{
+	">":   {},
+	"1>":  {},
+	"2>":  {},
+	">>":  {},
+	"1>>": {},
+	"2>>": {},
+}
+
+func _initEnv() {
+	home, home_err := os.UserHomeDir()
+	wd, wd_err := os.Getwd()
+
+	if home_err != nil || wd_err != nil {
+		log.Panicln("Error while getting  env variables! :(")
 	}
 
-	return ""
+	if err := os.Setenv("HOME", home); err != nil {
+		log.Panicln("Error while setting home env variables! :(")
+	}
+
+	if err := os.Setenv("PWD", wd); err != nil {
+		log.Panicln("Error while setting working dir env variables! :(")
+	}
 }
 
 func _searchCommandInPath(command string) (string, bool) {
@@ -54,7 +87,7 @@ func _getUserIput() string {
 		os.Exit(1)
 	}
 
-	return input
+	return strings.TrimRight(input, "\r\n")
 }
 
 func _parseArgs(s string) []string {
