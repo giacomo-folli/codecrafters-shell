@@ -9,38 +9,6 @@ import (
 	"strings"
 )
 
-var PATH []string = make([]string, 0)
-
-type output struct {
-	stdOut    string
-	stdErr    string
-	appendOut bool
-	appendErr bool
-}
-
-var BUILTINS = map[string]struct{}{
-	"exit": {},
-	"echo": {},
-	"type": {},
-	"pwd":  {},
-	"cd":   {},
-}
-
-var DOUBLE_SPECIAL_CHARS = map[rune]struct{}{
-	'$':  {},
-	'\\': {},
-	'"':  {},
-}
-
-var REDIRECTS = map[string]struct{}{
-	">":   {},
-	"1>":  {},
-	"2>":  {},
-	">>":  {},
-	"1>>": {},
-	"2>>": {},
-}
-
 func _initEnv() {
 	home, home_err := os.UserHomeDir()
 	wd, wd_err := os.Getwd()
