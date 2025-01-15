@@ -29,14 +29,19 @@ func task(command string, args []string) (ok bool) {
 		output, err = run(command, args)
 	}
 
-	if !found || err != nil {
+	if !found {
 		fmt.Print(output)
-		return
-	}
+	} else {
+		if err != nil {
+			fmt.Print(err.Error())
+		}
 
-	err = _writeToFile(file[0], output)
-	if err != nil {
-		fmt.Print("could not write in file\n")
+		if output != "" {
+			err = _writeToFile(file[0], output)
+			if err != nil {
+				fmt.Print("could not write in file\n")
+			}
+		}
 	}
 	return
 }

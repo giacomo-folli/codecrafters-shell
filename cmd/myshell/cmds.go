@@ -74,20 +74,15 @@ func run(command string, args []string) (string, error) {
 	var stderr bytes.Buffer
 
 	cmd := exec.Command(command, args...)
-	// stdout, err := cmd.Output()
 
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
 
 	err := cmd.Run()
 	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			return fmt.Sprint(string(exitErr.Stderr)), err
-		}
-
-		return fmt.Sprint(err), err
+		return fmt.Sprint(out.String()), errors.New(fmt.Sprint(stderr.String()))
 	}
 
-	output := out.Bytes()
-	return fmt.Sprint(string(output)), nil
+	output := out.String()
+	return fmt.Sprint(output), nil
 }
