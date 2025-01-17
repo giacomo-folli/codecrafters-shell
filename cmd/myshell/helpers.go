@@ -189,7 +189,7 @@ func _parseDoubleQuoted(s string, start int) (string, int) {
 	return string(content), len(s)
 }
 
-func _checkRedirection(args []string) (bool, bool, []string, []string) {
+func _checkRedirection(args []string) (bool, bool, bool, []string, []string) {
 	var redirection_string []string
 	args_string := args
 
@@ -198,22 +198,43 @@ func _checkRedirection(args []string) (bool, bool, []string, []string) {
 			args_string = args[:i]
 			redirection_string = args[i+1:]
 
-			return false, true, args_string, redirection_string
+			return false, true, false, args_string, redirection_string
+		}
+
+		if args[i] == "2>>" {
+			args_string = args[:i]
+			redirection_string = args[i+1:]
+
+			return false, true, true, args_string, redirection_string
 		}
 
 		if args[i] == "1>" || args[i] == ">" {
 			args_string = args[:i]
 			redirection_string = args[i+1:]
 
-			return true, false, args_string, redirection_string
+			return true, false, false, args_string, redirection_string
+		}
+
+		if args[i] == "1>>" || args[i] == ">>" {
+			args_string = args[:i]
+			redirection_string = args[i+1:]
+
+			return true, false, true, args_string, redirection_string
 		}
 	}
 
-	return false, false, args_string, nil
+	return false, false, false, args_string, nil
 }
 
-func _writeToFile(file string, data string) error {
-	f, err := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+func _writeToFile(file string, data string, append bool) error {
+	var flags int
+	if append {
+		flags = int(os.O_APPEND | os.O_CREATE | os.O_WRONLY)
+	} else {
+		flags = int(os.O_CREATE | os.O_WRONLY)
+	}
+
+	f, err := os.OpenFile(file, flags, 0644)
 	if err != nil {
 		return err
 	}
