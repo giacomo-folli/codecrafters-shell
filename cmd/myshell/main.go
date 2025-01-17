@@ -18,7 +18,7 @@ var commands = map[string]MyFunc{
 
 func task(command string, args []string) (ok bool) {
 	// override args if found redirection action
-	found, args, file := _checkRedirection(args)
+	foundOutput, foundError, args, file := _checkRedirection(args)
 	output := "\n"
 	var err error
 
@@ -29,9 +29,18 @@ func task(command string, args []string) (ok bool) {
 		output, err = run(command, args)
 	}
 
-	if !found {
-		fmt.Print(output)
-	} else {
+	if foundError {
+		err = _writeToFile(file[0], err.Error())
+		if err != nil {
+			fmt.Print("could not write in file\n")
+		}
+		if output != "" {
+			fmt.Print(output)
+		}
+		return
+	}
+
+	if foundOutput {
 		if err != nil {
 			fmt.Print(err.Error())
 		}
@@ -43,6 +52,7 @@ func task(command string, args []string) (ok bool) {
 			}
 		}
 	}
+
 	return
 }
 
