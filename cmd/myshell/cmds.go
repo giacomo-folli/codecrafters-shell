@@ -69,7 +69,7 @@ func cd(args []string) string {
 func run(command string, args []string) (string, string, error) {
 	_, found := _searchCommandInPath(command)
 	if !found {
-		return "", fmt.Sprintln(command + ": command not found"), nil
+		return "", fmt.Sprintln(command + ": command not found"), errors.New(fmt.Sprintln(command + ": command not found"))
 	}
 
 	var out bytes.Buffer
