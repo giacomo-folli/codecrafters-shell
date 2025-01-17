@@ -85,6 +85,5 @@ func run(command string, args []string) (string, string, error) {
 		return fmt.Sprint(out.String()), fmt.Sprint(stderr.String()), err
 	}
 
-	output := out.String()
-	return fmt.Sprint(output), "", nil
+	return fmt.Sprint(out.String()), "", nil
 }

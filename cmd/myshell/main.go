@@ -43,7 +43,11 @@ func task(command string, args []string) (ok bool) {
 
 	if standRedirect {
 		if err != nil {
-			fmt.Print(err.Error())
+			if errString != "" {
+				fmt.Print(errString)
+			} else {
+				fmt.Print(err.Error())
+			}
 		}
 
 		if outString != "" {
