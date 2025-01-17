@@ -52,8 +52,10 @@ func task(command string, args []string) (ok bool) {
 				fmt.Print("could not write in file\n")
 			}
 		}
+		return
 	}
 
+	fmt.Print(output)
 	return
 }
 
