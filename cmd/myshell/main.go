@@ -59,6 +59,15 @@ func task(command string, args []string) (ok bool) {
 		return
 	}
 
+	if err != nil {
+		if errString != "" {
+			fmt.Print(errString)
+		} else {
+			fmt.Print(err.Error())
+		}
+		return
+	}
+
 	fmt.Print(outString)
 	return
 }
