@@ -82,7 +82,7 @@ func run(command string, args []string) (string, string, error) {
 
 	err := cmd.Run()
 	if err != nil {
-		return "", fmt.Sprint(stderr.String()), err
+		return fmt.Sprint(out.String()), fmt.Sprint(stderr.String()), err
 	}
 
 	output := out.String()
