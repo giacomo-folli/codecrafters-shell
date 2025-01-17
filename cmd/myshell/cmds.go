@@ -66,10 +66,10 @@ func cd(args []string) string {
 }
 
 // Run a general command provided by the user
-func run(command string, args []string) (string, error) {
+func run(command string, args []string) (string, string, error) {
 	_, found := _searchCommandInPath(command)
 	if !found {
-		return fmt.Sprintln(command + ": command not found"), nil
+		return "", fmt.Sprintln(command + ": command not found"), nil
 	}
 
 	var out bytes.Buffer
@@ -82,9 +82,9 @@ func run(command string, args []string) (string, error) {
 
 	err := cmd.Run()
 	if err != nil {
-		return fmt.Sprint(out.String()), errors.New(fmt.Sprint(stderr.String()))
+		return "", fmt.Sprint(stderr.String()), err
 	}
 
 	output := out.String()
-	return fmt.Sprint(output), nil
+	return fmt.Sprint(output), "", nil
 }
