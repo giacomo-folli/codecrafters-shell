@@ -227,11 +227,9 @@ func _checkRedirection(args []string) (bool, bool, bool, []string, []string) {
 }
 
 func _writeToFile(file string, data string, append bool) error {
-	var flags int
+	var flags int = os.O_CREATE | os.O_WRONLY
 	if append {
-		flags = int(os.O_APPEND | os.O_CREATE | os.O_WRONLY)
-	} else {
-		flags = int(os.O_CREATE | os.O_WRONLY)
+		flags = flags | os.O_APPEND
 	}
 
 	f, err := os.OpenFile(file, flags, 0644)
