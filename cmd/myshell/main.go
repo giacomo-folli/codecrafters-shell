@@ -18,31 +18,57 @@ var commands = map[string]MyFunc{
 
 func task(command string, args []string) (ok bool) {
 	// override args if found redirection action
-	found, args, file := _checkRedirection(args)
-	output := "\n"
+	standRedirect, errRedirect, append, args, file := _checkRedirection(args)
+	outString, errString := "\n", ""
 	var err error
 
 	handler, ok := commands[command]
 	if ok {
-		output = handler(args)
+		outString = handler(args)
 	} else {
-		output, err = run(command, args)
+		outString, errString, err = run(command, args)
 	}
 
-	if !found {
-		fmt.Print(output)
-	} else {
+	if errRedirect {
+		err = _writeToFile(file[0], errString, append)
 		if err != nil {
-			fmt.Print(err.Error())
+			fmt.Print("could not write in file\n")
 		}
 
-		if output != "" {
-			err = _writeToFile(file[0], output)
+		if outString != "" {
+			fmt.Print(outString)
+		}
+		return
+	}
+
+	if standRedirect {
+		if err != nil {
+			if errString != "" {
+				fmt.Print(errString)
+			} else {
+				fmt.Print(err.Error())
+			}
+		}
+
+		if outString != "" {
+			err = _writeToFile(file[0], outString, append)
 			if err != nil {
 				fmt.Print("could not write in file\n")
 			}
 		}
+		return
 	}
+
+	if err != nil {
+		if errString != "" {
+			fmt.Print(errString)
+		} else {
+			fmt.Print(err.Error())
+		}
+		return
+	}
+
+	fmt.Print(outString)
 	return
 }
 
