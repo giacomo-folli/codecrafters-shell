@@ -52,12 +52,12 @@ func task(command string, args []string) (ok bool) {
 			}
 		}
 
-		if outString != "" {
-			err = _writeToFile(file[0], outString, appendIt)
-			if err != nil {
-				fmt.Print("could not write in file\n")
-			}
+		// if outString != "" {
+		err = _writeToFile(file[0], outString, appendIt)
+		if err != nil {
+			fmt.Print("could not write in file\n")
 		}
+		// }
 		return
 	}
 
