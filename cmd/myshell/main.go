@@ -7,18 +7,20 @@ import (
 
 type MyFunc func(args []string) string
 
-var builtins = []string{"echo", "exit", "type", "pwd"}
-var commands = map[string]MyFunc{
-	"echo": echo,
-	"exit": exit,
-	"type": ttype,
-	"pwd":  pwd,
-	"cd":   cd,
-}
+var (
+	builtins = []string{"echo", "exit", "type", "pwd"}
+	commands = map[string]MyFunc{
+		"echo": echo,
+		"exit": exit,
+		"type": ttype,
+		"pwd":  pwd,
+		"cd":   cd,
+	}
+)
 
 func task(command string, args []string) (ok bool) {
 	// override args if found redirection action
-	standRedirect, errRedirect, append, args, file := _checkRedirection(args)
+	standRedirect, errRedirect, appendIt, args, file := _checkRedirection(args)
 	outString, errString := "\n", ""
 	var err error
 
@@ -30,7 +32,7 @@ func task(command string, args []string) (ok bool) {
 	}
 
 	if errRedirect {
-		err = _writeToFile(file[0], errString, append)
+		err = _writeToFile(file[0], errString, appendIt)
 		if err != nil {
 			fmt.Print("could not write in file\n")
 		}
@@ -51,7 +53,7 @@ func task(command string, args []string) (ok bool) {
 		}
 
 		if outString != "" {
-			err = _writeToFile(file[0], outString, append)
+			err = _writeToFile(file[0], outString, appendIt)
 			if err != nil {
 				fmt.Print("could not write in file\n")
 			}

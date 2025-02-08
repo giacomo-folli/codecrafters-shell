@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path"
 	"strings"
 )
 
@@ -226,10 +227,15 @@ func _checkRedirection(args []string) (bool, bool, bool, []string, []string) {
 	return false, false, false, args_string, nil
 }
 
-func _writeToFile(file string, data string, append bool) error {
+func _writeToFile(file string, data string, appendIt bool) error {
 	var flags int = os.O_CREATE | os.O_WRONLY
-	if append {
+	if appendIt {
 		flags = flags | os.O_APPEND
+	}
+
+	if _, err := os.Stat(file); os.IsNotExist(err) {
+		path := path.Dir(file)
+		os.MkdirAll(path, 0700)
 	}
 
 	f, err := os.OpenFile(file, flags, 0644)
