@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"regexp"
 	"strings"
 
 	"golang.org/x/term"
@@ -114,14 +115,44 @@ func _autocomplete(input string) (suffix string) {
 		}
 	}
 
-	c, found := _searchCommandInPath(input)
-	if found {
+	c := _searchPartialCommandInPath(input)
+	if c != "" {
 		a, _ := strings.CutPrefix(path.Base(c), input)
-		fmt.Println("ei", c, found, a)
 		return a
 	}
 
 	return
+}
+
+func _searchPartialCommandInPath(input string) (command string) {
+	pathList := _listPaths()
+
+	for _, path := range pathList {
+		files, err := os.ReadDir(path)
+		if err != nil {
+			log.Fatalln("Can't read")
+			return
+		}
+
+		for _, file := range files {
+			pattern := "^" + input
+			match, err := regexp.Match(pattern, []byte(file.Name()))
+			if err != nil {
+				log.Fatalln("Can't match")
+				return
+			}
+
+			if match {
+				return file.Name()
+			}
+		}
+	}
+
+	return
+}
+
+func _listPaths() (path []string) {
+	return strings.Split(os.Getenv("PATH"), string(os.PathListSeparator))
 }
 
 func _parseArgs(s string) []string {
