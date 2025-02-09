@@ -114,6 +114,13 @@ func _autocomplete(input string) (suffix string) {
 		}
 	}
 
+	c, found := _searchCommandInPath(input)
+	if found {
+		a, _ := strings.CutPrefix(path.Base(c), input)
+		fmt.Println("ei", c, found, a)
+		return a
+	}
+
 	return
 }
 
