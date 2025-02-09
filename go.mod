@@ -10,8 +10,6 @@ module github.com/codecrafters-io/shell-starter-go
 
 go 1.22
 
-require (
-	github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
-	github.com/sergi/go-diff v1.3.1 // indirect
-)
+require golang.org/x/term v0.29.0
+
+require golang.org/x/sys v0.30.0 // indirect

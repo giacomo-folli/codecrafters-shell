@@ -80,7 +80,7 @@ func main() {
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 
-		userInput := _getUserIput()
+		userInput := _getUserInput()
 		if userInput == "" {
 			continue
 		}

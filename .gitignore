@@ -1,7 +1,7 @@
 build/
-
 *.exe
 *.txt
 *test.*
 .env
-a
+
+cmd/myshell/myshell

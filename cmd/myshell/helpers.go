@@ -8,6 +8,8 @@ import (
 	"os/exec"
 	"path"
 	"strings"
+
+	"golang.org/x/term"
 )
 
 func _initEnv() {
@@ -49,7 +51,7 @@ func _searchBuildin(command string) bool {
 	return found
 }
 
-func _getUserIput() string {
+func _legacy_getUserIput() string {
 	input, err := bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
 		fmt.Fprintf(os.Stdout, "Error in reading string\n")
@@ -57,6 +59,69 @@ func _getUserIput() string {
 	}
 
 	return strings.TrimRight(input, "\r\n")
+}
+
+func _getUserInput() (input string) {
+	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
+	if err != nil {
+		panic(err)
+	}
+
+	r := bufio.NewReader(os.Stdin)
+
+loop:
+	for {
+		c, _, err := r.ReadRune()
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		defer term.Restore(int(os.Stdin.Fd()), oldState)
+
+		switch c {
+		case '\x03': // Ctrl+C
+			term.Restore(int(os.Stdin.Fd()), oldState)
+			os.Exit(0)
+
+		case '\r', '\n': // Enter
+			fmt.Fprint(os.Stdout, "\r\n")
+			break loop
+
+		case '\x7F': // Backspace
+			if length := len(input); length > 0 {
+				input = input[:length-1]
+				fmt.Fprint(os.Stdout, "\b \b")
+			}
+
+		case '\t': // Tab
+			suffix := _autocomplete(input)
+			if suffix != "" {
+				input += suffix + " "
+				fmt.Fprint(os.Stdout, suffix+" ")
+			}
+
+		default:
+			input += string(c)
+			fmt.Fprint(os.Stdout, string(c))
+		}
+	}
+
+	return
+}
+
+func _autocomplete(input string) (suffix string) {
+	if input == "" {
+		return
+	}
+
+	for i := range builtins {
+		if strings.Contains(builtins[i], input) {
+			a, _ := strings.CutPrefix(builtins[i], input)
+			return a
+		}
+	}
+
+	return
 }
 
 func _parseArgs(s string) []string {
