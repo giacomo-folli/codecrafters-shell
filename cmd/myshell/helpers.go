@@ -130,7 +130,6 @@ func _searchPartialCommandInPath(input string) (command string) {
 	for _, path := range pathList {
 		files, err := os.ReadDir(path)
 		if err != nil {
-			log.Fatalln("Can't read")
 			return
 		}
 
@@ -138,7 +137,6 @@ func _searchPartialCommandInPath(input string) (command string) {
 			pattern := "^" + input
 			match, err := regexp.Match(pattern, []byte(file.Name()))
 			if err != nil {
-				log.Fatalln("Can't match")
 				return
 			}
 
