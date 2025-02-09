@@ -51,16 +51,6 @@ func _searchBuildin(command string) bool {
 	return found
 }
 
-func _legacy_getUserIput() string {
-	input, err := bufio.NewReader(os.Stdin).ReadString('\n')
-	if err != nil {
-		fmt.Fprintf(os.Stdout, "Error in reading string\n")
-		os.Exit(1)
-	}
-
-	return strings.TrimRight(input, "\r\n")
-}
-
 func _getUserInput() (input string) {
 	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
@@ -81,6 +71,7 @@ loop:
 		switch c {
 		case '\x03': // Ctrl+C
 			term.Restore(int(os.Stdin.Fd()), oldState)
+			fmt.Print("\n")
 			os.Exit(0)
 
 		case '\r', '\n': // Enter
@@ -98,6 +89,8 @@ loop:
 			if suffix != "" {
 				input += suffix + " "
 				fmt.Fprint(os.Stdout, suffix+" ")
+			} else {
+				fmt.Fprint(os.Stdout, "\a")
 			}
 
 		default:
