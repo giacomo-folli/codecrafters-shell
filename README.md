@@ -1,35 +1,35 @@
-[![progress-banner](https://backend.codecrafters.io/progress/shell/ba10ddbd-e25a-4627-824a-0db78daba279)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# Build Your Own Shell
+Questo progetto è un punto di partenza per soluzioni in Go alla sfida "Build Your Own Shell". L'obiettivo è costruire una shell conforme a POSIX capace di interpretare comandi shell, eseguire programmi esterni e comandi builtin come `cd`, `pwd`, `echo` e altro ancora. Durante il percorso, imparerai a gestire il parsing dei comandi shell, REPLs, comandi builtin e molto altro.
 
-This is a starting point for Go solutions to the
-["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
+## Funzionalità
 
-In this challenge, you'll build your own POSIX compliant shell that's capable of
-interpreting shell commands, running external programs and builtin commands like
-cd, pwd, echo and more. Along the way, you'll learn about shell command parsing,
-REPLs, builtin commands, and more.
+### Comandi Builtin
+- `echo`: Stampa gli argomenti passati.
+- `exit`: Termina la shell.
+- `pwd`: Mostra la directory corrente.
+- `cd`: Cambia la directory corrente.
+- `type`: Verifica se un comando è builtin o esterno.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+### Esecuzione di Comandi Esterni
+La shell è in grado di eseguire comandi esterni presenti nel PATH di sistema.
 
-# Passing the first stage
+### Redirezione di Output
+Supporta la redirezione dell'output standard e degli errori:
+- `>`: Redirezione dell'output standard.
+- `>>`: Append dell'output standard.
+- `2>`: Redirezione degli errori.
+- `2>>`: Append degli errori.
 
-The entry point for your `shell` implementation is in `cmd/myshell/main.go`.
-Study and uncomment the relevant code, and push your changes to pass the first
-stage:
+### Autocompletamento
+Supporta l'autocompletamento dei comandi builtin e dei comandi esterni.
 
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
-```
+### Parsing degli Argomenti
+Gestisce correttamente argomenti con spazi, virgolette singole e doppie, e caratteri di escape.
 
-Time to move on to the next stage!
+## Struttura del Progetto
 
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `go (1.19)` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `cmd/myshell/main.go`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+- `cmd/myshell/main.go`: Punto di ingresso della shell.
+- `cmd/myshell/cmds.go`: Implementazione dei comandi builtin.
+- `cmd/myshell/helpers.go`: Funzioni di supporto per l'esecuzione dei comandi e la gestione dell'input.
+- `cmd/myshell/legacy.go`: Codice legacy commentato per riferimento.
+- `cmd/myshell/helpers_test.go`: Test per le funzioni di supporto.
