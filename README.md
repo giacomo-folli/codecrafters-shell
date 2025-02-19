@@ -1,6 +1,6 @@
-<img style="margin-inline: auto;" alt="golang icon" height="80px" width="auto" src="https://go.dev/blog/go-brand/Go-Logo/SVG/Go-Logo_Aqua.svg" />
+<img alt="golang icon" height="80px" width="auto" src="https://go.dev/blog/go-brand/Go-Logo/SVG/Go-Logo_Aqua.svg" />
 
-# Build Your Own Shell
+# Simple Shell in Go
 Questo progetto è un punto di partenza per soluzioni in Go alla sfida "Build Your Own Shell". L'obiettivo è costruire una shell conforme a POSIX capace di interpretare comandi shell, eseguire programmi esterni e comandi builtin come `cd`, `pwd`, `echo` e altro ancora. Durante il percorso, imparerai a gestire il parsing dei comandi shell, REPLs, comandi builtin e molto altro.
 
 ## Funzionalità
